@@ -1,0 +1,28 @@
+{
+  "name": "storage-challenge-concrete",
+  "version": "1.0.0",
+  "scripts": {
+    "start": "NODE_PATH=. node server.js",
+    "dev": "NODE_PATH=. NODE_ENV=development PORT=8001 SECRET=secret nodemon server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/oliveiragustavo/storage-challenge-concrete.git"
+  },
+  "author": "Gustavo Oliveira <oliveiragustavogof@gmail.com>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/oliveiragustavo/storage-challenge-concrete/issues"
+  },
+  "homepage": "https://github.com/oliveiragustavo/storage-challenge-concrete#readme",
+  "dependencies": {
+    "@google-cloud/storage": "^3.0.2",
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "multer": "^1.4.1"
+  },
+  "devDependencies": {
+    "morgan": "^1.9.1",
+    "nodemon": "^1.19.1"
+  }
+}
