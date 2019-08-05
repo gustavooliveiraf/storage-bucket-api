@@ -1,33 +1,39 @@
 const { storage } = require('../config')
 
-const post = async (req, res) => {
-	const file = storage.bucket(req.params.bucketName).file(req.params.uuid)
+const create = async (req, res) => {
+	const file = storage.bucket(req.params.bucket).file(req.params.uuid)
 
 	file.createWriteStream({
-		resumable: true,
-		contentType: req.file.mimetype,
-		predefinedAcl: 'publicRead',
-	})
-	.on('error', err => {
+		contentType: req.file.mimetype
+	}).on('error', err => {
 		console.log(err)
 		return res.status(400).json(false)
-	})
-	.on('finish', () => {
+	}).on('finish', () => {
 		return res.status(201).json(true)
-	})
-	.end(req.file.buffer)
+	}).end(req.file.buffer)
 }
 
 const read = async (req, res) => {
 	try {
-		const file = storage.bucket(req.params.bucketName).file(req.params.uuid)
-
-		const contentType = (await file.getMetadata())[0].contentType
-		const blob = await file.download()
+		const file = storage.bucket(req.params.bucket).file(req.params.uuid)
 
 		if (req.query.blob) return res.status(200).send(blob)
+
+		const contentType = (await file.getMetadata())[0].contentType
 		
-		return res.status(200).json('data:' + contentType + ';base64,' + blob[0].toString('base64'))
+		return res.status(200).json('data:' + contentType + ';base64,' + (await file.download())[0].toString('base64'))
+	} catch (err) {
+		return res.status(400).json(false)
+	}
+}
+
+const deletes = async (req, res) => {
+	try {
+		const file = storage.bucket(req.params.bucket).file(req.params.uuid)
+
+		await file.delete()
+
+		return res.status(200).json(true)
 	} catch (err) {
 		console.log(err)
 		return res.status(400).json(false)
@@ -35,6 +41,7 @@ const read = async (req, res) => {
 }
 
 module.exports = {
-	post,
-	read
+	create,
+	read,
+	deletes
 }
